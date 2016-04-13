@@ -1,0 +1,22 @@
+{
+  "name": "expresser/user",
+  "support": {
+    "issues": "https://github.com/expresser/user/issues",
+    "source": "https://github.com/expresser/user"
+  },
+  "authors": [
+    {
+      "name": "Graham Blevins",
+      "email": "hgblevins@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "illuminate/support": "5.0.33"
+  },
+  "autoload": {
+    "psr-4": {
+      "Expresser\\User\\": ""
+    }
+  }
+}
