@@ -13,7 +13,7 @@
   "repositories":[
 		{
       "type": "vcs",
-      "url": "https://github.com/expresser/support.git"
+      "url": "https://github.com/expresser/support"
     }
 	],
   "require": {
@@ -24,5 +24,6 @@
     "psr-4": {
       "Expresser\\User\\": ""
     }
-  }
+  },
+  "minimum-stability": "dev"
 }
