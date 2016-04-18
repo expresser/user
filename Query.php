@@ -127,9 +127,9 @@ class Query extends \Expresser\Support\Query {
     return $this;
   }
 
-  public function number($limit) {
+  public function number($number) {
 
-    $this->number = $limit;
+    $this->number = $number;
 
     return $this;
   }

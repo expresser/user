@@ -36,7 +36,7 @@ abstract class Base extends \Expresser\Support\Model {
 
   public function fullName() {
 
-    $fullName = trim(implode(array($this->user->first_name, $this->user->last_name), ' '));
+    $fullName = trim(implode([$this->user->first_name, $this->user->last_name], ' '));
 
     if (!empty($fullName)) return $this->full_name = $fullName;
   }
