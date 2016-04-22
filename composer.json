@@ -10,12 +10,6 @@
       "email": "hgblevins@gmail.com"
     }
   ],
-  "repositories":[
-		{
-      "type": "vcs",
-      "url": "https://github.com/expresser/support"
-    }
-	],
   "require": {
     "php": ">=5.4.0",
     "expresser/support": "dev-master"

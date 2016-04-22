@@ -38,7 +38,14 @@ class Query extends \Expresser\Support\Query {
 
   public function first() {
 
-    return $this->number(1)->get()->first();
+    return $this->limit(1)->get()->first();
+  }
+
+  public function limit($limit) {
+
+    $this->number = $limit;
+
+    return $this;
   }
 
   public function get() {
