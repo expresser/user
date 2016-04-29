@@ -5,6 +5,8 @@ use WP_User_Query;
 
 abstract class Base extends \Expresser\Support\Model {
 
+  protected $fieldPrefix = 'user_';
+
   protected $user;
 
   public function __construct(WP_User $user = null) {
@@ -39,15 +41,6 @@ abstract class Base extends \Expresser\Support\Model {
     $fullName = trim(implode([$this->user->first_name, $this->user->last_name], ' '));
 
     if (!empty($fullName)) return $this->full_name = $fullName;
-  }
-
-  public function getAttributeFromArray($key) {
-
-    $value = parent::getAttributeFromArray($key);
-
-    if (is_null($value)) $value = parent::getAttributeFromArray('user_' . $key);
-
-    return $value;
   }
 
   public function getIdAttribute($value) {
