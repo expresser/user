@@ -112,4 +112,11 @@ abstract class Base extends \Expresser\Support\Model {
 
     return update_user_meta($this->ID, $key, $value, $previousValue);
   }
+
+  public static function registerHooks($class) {
+
+    add_action('delete_user', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
+    add_action('profile_update', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
+    add_action('user_register', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
+  }
 }
