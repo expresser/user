@@ -113,10 +113,22 @@ abstract class Base extends \Expresser\Support\Model {
     return update_user_meta($this->ID, $key, $value, $previousValue);
   }
 
+  public static function doRefreshRewrites($id = 0, $exclude = false) {
+
+    parent::doRefreshRewrites($id, 'user', $exclude);
+  }
+
+  public static function doRemoveUserFromBlog($id = 0) {
+
+    static::doRefreshRewrites($id, true);
+  }
+
   public static function registerHooks($class) {
 
-    add_action('delete_user', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
-    add_action('profile_update', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
-    add_action('user_register', [__CLASS__, 'refreshRewriteRules'], PHP_INT_MAX, 0);
+    add_action('add_user_to_blog', [__CLASS__, 'doRefreshRewrites'], PHP_INT_MAX, 1);
+    add_action('delete_user', [__CLASS__, 'doRefreshRewrites'], PHP_INT_MAX, 1);
+    add_action('profile_update', [__CLASS__, 'doRefreshRewrites'], PHP_INT_MAX, 1);
+    add_action('remove_user_from_blog', [__CLASS__, 'doRemoveUserFromBlog'], PHP_INT_MAX, 1);
+    add_action('user_register', [__CLASS__, 'doRefreshRewrites'], PHP_INT_MAX, 1);
   }
 }
