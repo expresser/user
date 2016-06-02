@@ -80,7 +80,7 @@ abstract class Base extends \Expresser\Support\Model {
 
   public function posts() {
 
-    return $this->posts = Post::whereAuthor($this->ID)->get();
+    return $this->posts = Post::query()->author($this->ID)->get();
   }
 
   public function postsUrl() {
