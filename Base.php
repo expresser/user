@@ -75,7 +75,9 @@ abstract class Base extends \Expresser\Support\Model {
 
   public function newQuery() {
 
-    return (new Query(new WP_User_Query))->setModel($this);
+    $query = (new Query(new WP_User_Query))->setModel($this);
+
+    return $query;
   }
 
   public function posts() {

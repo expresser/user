@@ -156,7 +156,8 @@ class Query extends \Expresser\Support\Query {
     return $this;
   }
 
-  // TODO: Date Query
+  // TODO: Date Query implementation
+  public function date() {}
 
   public function metaCompare($compare) {
 
