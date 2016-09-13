@@ -7,11 +7,11 @@ use WP_User_Query;
 
 class Query extends \Expresser\Support\Query {
 
-  protected $metas = [];
-
   protected $columns = ['display_name', 'id', 'meta_value', 'post_count', 'user_email', 'user_login', 'user_name', 'user_nicename', 'user_registered', 'user_url'];
 
   public function __construct(WP_User_Query $query) {
+
+    $this->meta_query = [];
 
     parent::__construct($query);
   }
@@ -43,14 +43,12 @@ class Query extends \Expresser\Support\Query {
 
   public function limit($limit) {
 
-    $this->number = $limit;
-
-    return $this;
+    return $this->number($limit);
   }
 
   public function get() {
 
-    $this->query->prepare_query();
+    $this->query->prepare_query($this->params);
 
     $this->query->query();
 
@@ -157,7 +155,10 @@ class Query extends \Expresser\Support\Query {
   }
 
   // TODO: Date Query implementation
-  public function date() {}
+  public function date() {
+
+    return $this;
+  }
 
   public function metaCompare($compare) {
 
@@ -189,9 +190,9 @@ class Query extends \Expresser\Support\Query {
 
   public function meta($key, $value, $compare = '=', $type = 'CHAR') {
 
-    $this->metas[] = compact('key', 'value', 'compare', 'type');
+    $meta_query = compact('key', 'value', 'compare', 'type');
 
-    $this->meta_query = $this->metas;
+    $this->meta_query = array_merge($this->meta_query, $meta_query);
 
     return $this;
   }
@@ -200,12 +201,10 @@ class Query extends \Expresser\Support\Query {
 
     call_user_func($callback, $this);
 
-    if (count($this->metas) > 1) {
+    if (count($this->meta_query) > 1) {
 
-      $this->metas = array_merge(['relation' => $relation], $this->metas);
+      $this->meta_query = array_merge(['relation' => $relation], $this->meta_query);
     }
-
-    $this->meta_query = $this->metas;
 
     return $this;
   }
@@ -216,9 +215,7 @@ class Query extends \Expresser\Support\Query {
 
     $query->metas($callback, $relation);
 
-    $this->metas = array_merge($this->metas, [$query->meta_query]);
-
-    $this->meta_query = $this->metas;
+    $this->meta_query = array_merge($this->meta_query, [$query->meta_query]);
 
     return $this;
   }
