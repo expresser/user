@@ -192,7 +192,7 @@ class Query extends \Expresser\Support\Query {
 
     $meta_query = compact('key', 'value', 'compare', 'type');
 
-    $this->meta_query = array_merge($this->meta_query, $meta_query);
+    $this->meta_query = array_merge($this->meta_query, [$meta_query]);
 
     return $this;
   }
