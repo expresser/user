@@ -1,3 +1,7 @@
-<?php namespace Expresser\User;
+<?php
 
-abstract class Native extends Base {}
+namespace Expresser\User;
+
+abstract class Native extends Base
+{
+}
