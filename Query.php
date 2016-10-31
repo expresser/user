@@ -78,20 +78,16 @@ class Query extends \Expresser\Support\Query
 
     public function users(array $ids, $operator = 'IN')
     {
-        switch ($operator) {
-
-      case 'IN':
-
-        $this->include = $ids; break;
-
-      case 'NOT IN':
-
-        $this->exclude = $ids; break;
-
-      default:
-
-        throw new InvalidArgumentException();
-    }
+            switch ($operator) {
+                case 'IN':
+                    $this->include = $ids;
+                    break;
+                case 'NOT IN':
+                    $this->exclude = $ids;
+                    break;
+                default:
+                    throw new InvalidArgumentException();
+            }
 
         return $this;
     }
@@ -147,11 +143,11 @@ class Query extends \Expresser\Support\Query
         return $this;
     }
 
-  // TODO: Date Query implementation
-  public function date()
-  {
-      return $this;
-  }
+    // TODO: Date Query implementation
+    public function date()
+    {
+        return $this;
+    }
 
     public function metaCompare($compare)
     {
