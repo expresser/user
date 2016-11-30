@@ -31,6 +31,16 @@ abstract class Base extends \Expresser\Support\Model
         return delete_user_meta($this->ID, $key, $value);
     }
 
+    public function description()
+    {
+        return $this->user->description;
+    }
+
+    public function firstName()
+    {
+        return $this->user->first_name;
+    }
+
     public function fullName()
     {
         $fullName = trim(implode([$this->user->first_name, $this->user->last_name], ' '));
@@ -63,6 +73,11 @@ abstract class Base extends \Expresser\Support\Model
     public function hasRole($role)
     {
         return in_array($role, $this->user->roles);
+    }
+
+    public function lastName()
+    {
+        return $this->user->last_name;
     }
 
     public function newQuery()
@@ -104,11 +119,6 @@ abstract class Base extends \Expresser\Support\Model
     public function updateMeta($key, $value, $previousValue = '')
     {
         return update_user_meta($this->ID, $key, $value, $previousValue);
-    }
-
-    public function __get($key)
-    {
-        return $this->user->$key;
     }
 
     public static function doRefreshRewrites($id = 0, $exclude = false)
