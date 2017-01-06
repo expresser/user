@@ -3,10 +3,11 @@
 namespace Expresser\User;
 
 use Closure;
+use Expresser\Support\Query as BaseQuery;
 use InvalidArgumentException;
 use WP_User_Query;
 
-class Query extends \Expresser\Support\Query
+class Query extends BaseQuery
 {
     protected $columns = ['display_name', 'id', 'meta_value', 'post_count', 'user_email', 'user_login', 'user_name', 'user_nicename', 'user_registered', 'user_url'];
 
@@ -17,45 +18,15 @@ class Query extends \Expresser\Support\Query
         parent::__construct($query);
     }
 
-    public function current()
-    {
-        return $this->find(get_current_user_id());
-    }
-
-    public function find($id)
-    {
-        return $this->findAll([$id])->first();
-    }
-
-    public function findAll(array $ids)
-    {
-        return $this->users($ids)->get();
-    }
-
-    public function findByNicename($nicename)
-    {
-        return $this->search($nicename, ['user_nicename'])->first();
-    }
-
-    public function first()
-    {
-        return $this->limit(1)->get()->first();
-    }
-
-    public function limit($limit)
-    {
-        return $this->number($limit);
-    }
-
-    public function get()
+    public function execute()
     {
         $this->query->prepare_query($this->params);
 
         $this->query->query();
 
-        $users = $this->query->get_results();
+        $results = $this->query->get_results();
 
-        return $this->getModels($users);
+        return $results;
     }
 
     public function role($role)
@@ -78,16 +49,16 @@ class Query extends \Expresser\Support\Query
 
     public function users(array $ids, $operator = 'IN')
     {
-            switch ($operator) {
-                case 'IN':
-                    $this->include = $ids;
-                    break;
-                case 'NOT IN':
-                    $this->exclude = $ids;
-                    break;
-                default:
-                    throw new InvalidArgumentException();
-            }
+        switch ($operator) {
+            case 'IN':
+                $this->include = $ids;
+                break;
+            case 'NOT IN':
+                $this->exclude = $ids;
+                break;
+            default:
+                throw new InvalidArgumentException();
+        }
 
         return $this;
     }
@@ -199,7 +170,7 @@ class Query extends \Expresser\Support\Query
 
     public function metasSub(Closure $callback, $relation = 'AND')
     {
-        $query = (new static(new WP_User_Query()))->setModel($this->model);
+        $query = (new static(new WP_User_Query));
 
         $query->metas($callback, $relation);
 
@@ -213,5 +184,10 @@ class Query extends \Expresser\Support\Query
         $this->who = 'authors';
 
         return $this;
+    }
+
+    public function limit($limit)
+    {
+        return $this->number($limit);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Expresser\User;
 
+use Expresser\Support\Model;
 use WP_User;
 use WP_User_Query;
 
-abstract class Base extends \Expresser\Support\Model
+abstract class Base extends Model
 {
     protected $user;
 
@@ -82,7 +83,7 @@ abstract class Base extends \Expresser\Support\Model
 
     public function newQuery()
     {
-        $query = (new Query(new WP_User_Query()))->setModel($this);
+        $query = (new Builder(new Query(new WP_User_Query)))->setModel($this);
 
         return $query;
     }
