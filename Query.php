@@ -13,25 +13,39 @@ class Query extends BaseQuery
 
     public function __construct(WP_User_Query $query)
     {
-        $this->meta_query = [];
-
         parent::__construct($query);
     }
 
     public function execute()
     {
-        $this->query->prepare_query($this->params);
+        $this->query->prepare_query();
 
         $this->query->query();
 
-        $results = $this->query->get_results();
+        $users = $this->query->get_results();
 
-        return $results;
+        return $users;
     }
 
     public function role($role)
     {
-        $this->role = $role;
+        $this->setQueryVar('role', $role);
+
+        return $this;
+    }
+
+    public function users(array $ids, $operator = 'IN')
+    {
+        switch ($operator) {
+            case 'IN':
+                $this->setQueryVar('include', $ids);
+                break;
+            case 'NOT IN':
+                $this->setQueryVar('exclude', $ids);
+                break;
+            default:
+                throw new InvalidArgumentException();
+        }
 
         return $this;
     }
@@ -47,26 +61,10 @@ class Query extends BaseQuery
         return $this;
     }
 
-    public function users(array $ids, $operator = 'IN')
-    {
-        switch ($operator) {
-            case 'IN':
-                $this->include = $ids;
-                break;
-            case 'NOT IN':
-                $this->exclude = $ids;
-                break;
-            default:
-                throw new InvalidArgumentException();
-        }
-
-        return $this;
-    }
-
     public function blog($id)
     {
         if (is_int($id)) {
-            $this->blog_id = $id;
+            $this->setQueryVar('blog_id', $id);
         } else {
             throw new InvalidArgumentException();
         }
@@ -86,30 +84,36 @@ class Query extends BaseQuery
             throw new InvalidArgumentException();
         }
 
-        $this->search = $value;
-        $this->search_columns = $columns;
+        $this->setQueryVar('search', $value);
+        $this->setQueryVar('search_columns', $columns);
 
         return $this;
     }
 
     public function number($number)
     {
-        $this->number = $number;
+        $this->setQueryVar('number', $number);
 
         return $this;
     }
 
+    public function limit($limit)
+    {
+        return $this->number($limit);
+    }
+
+
     public function offset($offset)
     {
-        $this->offset = $offset;
+        $this->setQueryVar('offset', $offset);
 
         return $this;
     }
 
     public function orderBy($orderby = 'login', $order = 'ASC')
     {
-        $this->orderby = $orderby;
-        $this->order = $order;
+        $this->setQueryVar('orderby', $orderby);
+        $this->setQueryVar('order', $order);
 
         return $this;
     }
@@ -122,28 +126,28 @@ class Query extends BaseQuery
 
     public function metaCompare($compare)
     {
-        $this->meta_compare = $compare;
+        $this->setQueryVar('meta_compare', $compare);
 
         return $this;
     }
 
     public function metaKey($key)
     {
-        $this->meta_key = $key;
+        $this->setQueryVar('meta_key', $key);
 
         return $this;
     }
 
     public function metaType($type)
     {
-        $this->meta_type = $type;
+        $this->setQueryVar('meta_type', $type);
 
         return $this;
     }
 
     public function metaValue($value)
     {
-        $this->meta_value = $value;
+        $this->setQueryVar('meta_value', $value);
 
         return $this;
     }
@@ -152,7 +156,9 @@ class Query extends BaseQuery
     {
         $meta_query = compact('key', 'value', 'compare', 'type');
 
-        $this->meta_query = array_merge($this->meta_query, [$meta_query]);
+        $meta_query = array_merge($this->getQueryVar('meta_query'), [$meta_query]);
+
+        $this->setQueryVar('meta_query', $meta_query);
 
         return $this;
     }
@@ -161,8 +167,13 @@ class Query extends BaseQuery
     {
         call_user_func($callback, $this);
 
-        if (count($this->meta_query) > 1) {
-            $this->meta_query = array_merge(['relation' => $relation], $this->meta_query);
+        $meta_query = $this->getQueryVar('meta_query');
+
+        if (count($meta_query) > 1) {
+
+            $meta_query = array_merge(['relation' => $relation], $meta_query);
+
+            $this->setQueryVar('meta_query', $meta_query);
         }
 
         return $this;
@@ -174,20 +185,24 @@ class Query extends BaseQuery
 
         $query->metas($callback, $relation);
 
-        $this->meta_query = array_merge($this->meta_query, [$query->meta_query]);
+        $meta_query = $this->getQueryVar('meta_query');
+
+        $meta_query = array_merge($meta_query, [$query->getQueryVar('meta_query')]);
+
+        $this->setQueryVar('meta_query', $meta_query);
 
         return $this;
     }
 
     public function who()
     {
-        $this->who = 'authors';
+        $this->setQueryVar('who', 'authors');
 
         return $this;
     }
 
-    public function limit($limit)
+    protected function initQueryVars()
     {
-        return $this->number($limit);
+        $this->setQueryVar('meta_query', []);
     }
 }
