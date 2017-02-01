@@ -181,13 +181,13 @@ class Query extends BaseQuery
 
     public function metasSub(Closure $callback, $relation = 'AND')
     {
-        $query = (new static(new WP_User_Query));
+        $query = (new static(new WP_Query));
 
         $query->metas($callback, $relation);
 
-        $meta_query = $this->getQueryVar('meta_query');
+        $meta_query = $query->getQueryVar('meta_query');
 
-        $meta_query = array_merge($meta_query, [$query->getQueryVar('meta_query')]);
+        $meta_query = array_merge($this->getQueryVar('meta_query'), [$meta_query]);
 
         $this->setQueryVar('meta_query', $meta_query);
 
