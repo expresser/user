@@ -16,6 +16,15 @@ class Query extends BaseQuery
         parent::__construct($query);
     }
 
+    public function getMetaQueryQueryVar($value)
+    {
+        if (is_null($value)) {
+            $value = [];
+        }
+
+        return $value;
+    }
+
     public function execute()
     {
         $this->query->prepare_query();
@@ -181,7 +190,7 @@ class Query extends BaseQuery
 
     public function metasSub(Closure $callback, $relation = 'AND')
     {
-        $query = (new static(new WP_Query));
+        $query = (new static(new WP_User_Query));
 
         $query->metas($callback, $relation);
 
@@ -199,10 +208,5 @@ class Query extends BaseQuery
         $this->setQueryVar('who', 'authors');
 
         return $this;
-    }
-
-    protected function initQueryVars()
-    {
-        $this->setQueryVar('meta_query', []);
     }
 }
